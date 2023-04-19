@@ -48,21 +48,21 @@ typedef struct s_rules
 	struct timeval	start;
 }				t_rules;
 
-int	write_std_error(char *str);
-void	print_std_error(int flag);
+void			print_std_error(int flag);
 
 unsigned long	gap_time(struct timeval v);
 
-int	sem_print_action(t_rules *rules, char *str);
-void	close_semaphores(t_rules *rules);
-int	check_if_dead(t_rules *rules);
-int	sem_take_fork(t_rules *rules);
-int	sem_put_back_forks(t_rules *rules);
+int				init_philos(t_rules *rules, char **argv);
 
-void	start_child_process(t_rules *rules);
-void	start_parent_process(t_rules *rules);
+int				start_parent_process(t_rules *rules);
 
-int	init_philos(t_rules *rules, char **argv);
-int	thinking(t_rules *rules);
+int				start_child_process(t_rules *rules);
+void			thinking(t_rules *rules);
+
+int				sem_print_action(t_rules *rules, char *str);
+void			close_semaphores(t_rules *rules);
+int				check_if_dead(t_rules *rules);
+int				sem_take_fork(t_rules *rules);
+int				sem_put_back_forks(t_rules *rules);
 
 #endif

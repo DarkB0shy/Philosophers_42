@@ -12,7 +12,7 @@
 
 #include "philo_bonus.h"
 
-int write_std_error(char *str)
+void write_std_error(char *str)
 {
     int i;
 
@@ -22,16 +22,15 @@ int write_std_error(char *str)
     write(2, "Error: ", 7);
     write(2, str, i);
     write(2, "\n", 1);
-    return (1);
 }
 
 void print_std_error(int flag)
 {
     if (flag == 1)
+        write_std_error("wrong N of arguments");
+    else if (flag == 2)
         write_std_error("at least one wrong argument");
-    if (flag == 2)
-        write_std_error("error while creating a semaphore");
-	if (flag == 3)
+	else if (flag == 3)
 		write_std_error("error while closing a semaphore");
     exit(1);
 }

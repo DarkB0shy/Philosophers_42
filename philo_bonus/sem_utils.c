@@ -25,18 +25,14 @@ int sem_print_action(t_rules *rules, char *str)
 
 void	close_semaphores(t_rules *rules)
 {
-	if (!sem_close(rules->sem_f))
-	{
-		if (!sem_close(rules->sem_p))
-		{
-			if (!sem_unlink("/post"))
-			{
-				if (!sem_unlink("/forks"))
-					exit(0);
-			}
-		}
-	}
-	print_std_error(3);
+	sem_post(rules->sem_f);
+	sem_post(rules->sem_f);
+	sem_unlink("/post");
+	sem_unlink("/forks");
+	sem_close(rules->sem_f);
+	sem_close(rules->sem_p);
+	free (rules);
+	exit(1);
 }
 
 int	check_if_dead(t_rules *rules)

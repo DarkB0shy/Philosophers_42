@@ -14,15 +14,14 @@
 
 int main (int argc, char **argv)
 {
-    t_rules   *rules;
+    t_rules *rules;
     int     i;
 
-	rules = NULL;
-    i = 0;
+	rules = (t_rules *)malloc(sizeof(t_rules));
     if (argc < 5 || argc > 6)
-        return (write_std_error("wrong N of arguments"));
-    if ((i = init_philos(rules, argv)))
-        print_std_error(i);
+        print_std_error(1);
+    if (init_philos(rules, argv))
+        print_std_error(2);
     i = -1;
     while (++i < rules->num_philo)
     {
@@ -36,5 +35,6 @@ int main (int argc, char **argv)
     if (!rules->parent)
         start_child_process(rules);
     start_parent_process(rules);
+    free (rules);
     return (0);
 }

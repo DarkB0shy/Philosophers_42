@@ -12,12 +12,13 @@
 
 #include "philo_bonus.h"
 
-void	start_parent_process(t_rules *rules)
+int	start_parent_process(t_rules *rules)
 {
 	int	cnt_m;
 	int	state;
 
 	cnt_m = 0;
+	state = 0;
 	while (waitpid(0, &state, 0))
 	{
 		if (((state >> 8) & 0x0000000ff) == 0)
@@ -32,6 +33,7 @@ void	start_parent_process(t_rules *rules)
 				break ;
 		}
 	}
+	return (0);
 }
 
 unsigned long	gap_time(struct timeval v)
@@ -43,7 +45,7 @@ unsigned long	gap_time(struct timeval v)
 		- ((v.tv_sec * 1000) + (v.tv_usec / 1000)));
 }
 
-static int	sleeping(t_rules *rules)
+static void	sleeping(t_rules *rules)
 {
 	if (gap_time(rules->philo.start_eat) >= rules->time_to_eat)
 	{
@@ -59,53 +61,46 @@ static int	sleeping(t_rules *rules)
 				{
 					if (gap_time(rules->philo.start_sleep) >= rules->time_to_sleep)
 					{
-						return (thinking(rules));
+						thinking(rules);
 					}
 				}
 			}
 		}
 	}
-	return (1);
 }
 
-int	thinking(t_rules *rules)
+void	thinking(t_rules *rules)
 {
-	if (!check_if_dead(rules))
+	if (!sem_print_action(rules, "is thinking"))
 	{
-		if (!sem_print_action(rules, "is thinking"))
+		if (!check_if_dead(rules))
 		{
-			if (!check_if_dead(rules))
+			if (!sem_take_fork(rules))
 			{
 				if (!sem_take_fork(rules))
 				{
-					if (!sem_take_fork(rules))
+					if (!sem_print_action(rules, "is eating"))
 					{
-						if (!sem_print_action(rules, "is eating"))
+						if (!check_if_dead(rules))
 						{
+							gettimeofday(&rules->philo.start_eat, NULL);
 							if (!check_if_dead(rules))
-							{
-								gettimeofday(&rules->philo.start_eat, NULL);
-								return (sleeping(rules));
-							}
+								sleeping(rules);
 						}
 					}
 				}
 			}
 		}
 	}
-	return (1);
 }
 
-void	start_child_process(t_rules *rules)
+int	start_child_process(t_rules *rules)
 {
-	int	loop;
-
-	loop = 0;
     gettimeofday(&rules->philo.start_sleep, NULL);
     gettimeofday(&rules->start, NULL);
-    while (!loop)
+    while (1)
     {
-		if (!thinking(rules))
-			loop = 1;
+		thinking(rules);
     }
+	return (0);
 }
