@@ -6,7 +6,7 @@
 /*   By: dcarassi <dcarassi@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 18:41:31 by dcarassi          #+#    #+#             */
-/*   Updated: 2023/04/18 18:41:32 by dcarassi         ###   ########.fr       */
+/*   Updated: 2023/04/20 15:08:28 by dcarassi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ long long	time_diff(long long past, long long pres)
 	return (pres - past);
 }
 
-void    smart_sleep(long long time, t_rules *rules)
+void	smart_sleep(long long time, t_rules *rules)
 {
-	long long i;
+	long long	i;
 
 	i = timestamp();
 	while (!(rules->finished))
@@ -38,22 +38,26 @@ void    smart_sleep(long long time, t_rules *rules)
 	}
 }
 
-int check_if_lunch_is_over(t_rules *rules)
+int	check_if_lunch_is_over(t_philosopher *philo)
 {
-    int i;
-    int temp;
+	t_rules	*rules;
+	int		i;
+	int		temp;
 
-    temp = 0;
-    i = rules->nb_philo;
-    while (--i >= 0)
-    {
-        if (rules->philosophers[i].x_ate == rules->nb_eat)
-            temp++;
-        else
-            break ;
-    }
-    if (temp == rules->nb_philo - 1)
-        return (1);
-    else
-        return (0);
+	rules = philo->rules;
+	if (!rules->nb_eat)
+		return (0);
+	temp = 0;
+	i = rules->nb_philo;
+	while (--i >= 0)
+	{
+		if (rules->philosophers[i].x_ate == rules->nb_eat)
+			temp++;
+		else
+			break ;
+	}
+	if (temp == rules->nb_philo - 1)
+		return (1);
+	else
+		return (0);
 }
